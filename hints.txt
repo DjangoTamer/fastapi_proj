@@ -1,0 +1,72 @@
+1. Установка пакетов
+pip install fastapi
+pip install uvicorn для локального сервера
+
+2. Создаем файл main.py
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get('/main_page')
+def home():
+    return {'key': 'hello'}
+
+3. Запуск локального сервера:
+uvicorn main:app
+uvicorn main:app --reload для автоматической перезагрузки при изменениях кода
+
+http://127.0.0.1:8000/docs - автоматическая документация
+http://127.0.0.1:8000/redoc - альтернативная док.
+
+-----------------------------------------------------------------
+с помощью аннотаций - автоматическая валидация.
+int, str, float
+
+дополнительная валидация запроса с помощью Query
+
+-----------------------------------------------------------------
+
+GET:
+@app.get('/page_{pk}')
+def get_page(pk: int):
+    return {'key': pk}
+/page_3 --> {"key":3}
+/page_5 --> {"key":5}
+
+@app.get('/pages/page_{pk}')
+def get_page(pk: int, q = None):
+    return {'key': pk, 'query': q}
+/pages/page_5 --> {"key":5,"query":null}
+/pages/page_5?q=80 --> {"key":5,"query":"80"}
+
+@app.get('/info')
+def get_info(q: str = Query(None, min)):
+    return {'key': pk, 'query': q}
+
+-----------------------------------------------------------------
+
+POST:
+from schemas import Book
+@app.post('/book')
+def post_book(item: Book):
+    return item
+
+schemas.py
+from pydantic import BaseModel
+from datetime import date
+from typing import List
+
+class Genre(BaseModel):
+    name: str
+    genre_id: int
+
+class Book(BaseModel):
+    title: str
+    writer: str
+    duration: str
+    date: date
+    summary: str
+    genres: List[Genre]
+    pages: int = None
+
+-----------------------------------------------------------------
