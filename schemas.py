@@ -6,6 +6,11 @@ class Genre(BaseModel):
     name: str
     genre_id: int
 
+class Author(BaseModel):
+    first_name: str
+    last_name: str
+    age: int
+
 class Book(BaseModel):
     title: str
     writer: str
